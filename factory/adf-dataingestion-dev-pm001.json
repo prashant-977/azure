@@ -1,0 +1,14 @@
+{
+	"name": "adf-dataingestion-dev-pm001",
+	"properties": {
+		"globalConfigurations": {
+			"PolicyValidationEnabled": "true"
+		}
+	},
+	"location": "swedencentral",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "a0e5b490-9987-43f4-881e-89c7cb818622",
+		"tenantId": "dec7c752-883b-4d31-ae92-5b7b998ea3b8"
+	}
+}

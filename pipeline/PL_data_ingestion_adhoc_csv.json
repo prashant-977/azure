@@ -1,0 +1,186 @@
+{
+	"name": "PL_data_ingestion_adhoc_csv",
+	"properties": {
+		"description": "ingest event-driven (adhoc) csv files to the data engineering datalake",
+		"activities": [
+			{
+				"name": "Get Container Metadata",
+				"type": "GetMetadata",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.00:10:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "DS_abls_buyalot_files_metadata_csv",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": {
+								"value": "@pipeline().parameters.sourceContainer",
+								"type": "Expression"
+							}
+						}
+					},
+					"fieldList": [
+						"itemName",
+						"lastModified",
+						"childItems"
+					],
+					"storeSettings": {
+						"type": "AzureBlobStorageReadSettings",
+						"recursive": true,
+						"enablePartitionDiscovery": false
+					},
+					"formatSettings": {
+						"type": "DelimitedTextReadSettings"
+					}
+				}
+			},
+			{
+				"name": "Filter By File Type",
+				"type": "Filter",
+				"dependsOn": [
+					{
+						"activity": "Get Container Metadata",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Get Container Metadata').output.childItems",
+						"type": "Expression"
+					},
+					"condition": {
+						"value": "@endswith(item().name, concat('.', pipeline().parameters.fileType))",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "ForEach File",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Filter By File Type",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Filter By File Type').output.value",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Copy file into the datalake",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.00:10:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "DelimitedTextSource",
+									"storeSettings": {
+										"type": "AzureBlobStorageReadSettings",
+										"recursive": true,
+										"enablePartitionDiscovery": false
+									},
+									"formatSettings": {
+										"type": "DelimitedTextReadSettings"
+									}
+								},
+								"sink": {
+									"type": "DelimitedTextSink",
+									"storeSettings": {
+										"type": "AzureBlobFSWriteSettings"
+									},
+									"formatSettings": {
+										"type": "DelimitedTextWriteSettings",
+										"quoteAllText": true,
+										"fileExtension": ".txt"
+									}
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "DS_abls_buyalot_files_csv",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": {
+											"value": "@pipeline().parameters.sourceContainer",
+											"type": "Expression"
+										},
+										"fileName": {
+											"value": "@item().name",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "DS_adls_dataengineering_csv",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": {
+											"value": "@pipeline().parameters.targetContainer",
+											"type": "Expression"
+										},
+										"directory": {
+											"value": "@concat('raw',\n'/',\nsubstring(item().name, 0, indexof(item().name, '.')),\n'/',\nformatDateTime(convertFromUtc(utcnow(), 'W. Europe Standard Time'), 'yyyy-MM-dd'),\n'/',\nformatDateTime(convertFromUtc(utcnow(), 'W. Europe Standard Time'), 'HH'),\n'/',\nformatDateTime(convertFromUtc(utcnow(), 'W. Europe Standard Time'), 'mm'),\n'/',\nformatDateTime(convertFromUtc(utcnow(), 'W. Europe Standard Time'), 'ss')\n)\n",
+											"type": "Expression"
+										},
+										"fileName": "finance.csv"
+									}
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"sourceContainer": {
+				"type": "string",
+				"defaultValue": "finance"
+			},
+			"fileType": {
+				"type": "string",
+				"defaultValue": "csv"
+			},
+			"targetContainer": {
+				"type": "string",
+				"defaultValue": "finance"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-12-18T13:26:24Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

@@ -1,0 +1,13 @@
+{
+	"name": "LS_abs_webstore",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"description": "Connection to the webstore blob storage. ",
+		"annotations": [],
+		"type": "AzureBlobStorage",
+		"typeProperties": {
+			"connectionString": "DefaultEndpointsProtocol=https;AccountName=hypolwebstoredata001;EndpointSuffix=core.windows.net;",
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkFERi1EQVRBSU5HRVNUSU9OLURFVi1QTTAwMV85NGNhYTYzNS00MWQ2LTQ1ZjgtODFiMS05MWZiMDBjNmRmY2QiDQp9"
+		}
+	}
+}

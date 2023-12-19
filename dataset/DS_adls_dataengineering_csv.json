@@ -1,0 +1,51 @@
+{
+	"name": "DS_adls_dataengineering_csv",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_adls_data_engineering_dl",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"container": {
+				"type": "string",
+				"defaultValue": "finance"
+			},
+			"directory": {
+				"type": "string",
+				"defaultValue": "raw/finance"
+			},
+			"fileName": {
+				"type": "string",
+				"defaultValue": "finance.csv"
+			}
+		},
+		"folder": {
+			"name": "webstore"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@dataset().fileName",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@dataset().directory",
+					"type": "Expression"
+				},
+				"fileSystem": {
+					"value": "@dataset().container",
+					"type": "Expression"
+				}
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
