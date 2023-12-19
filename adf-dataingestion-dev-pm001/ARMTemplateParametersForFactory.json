@@ -1,0 +1,24 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "adf-dataingestion-dev-pm001"
+		},
+		"LS_abs_buyolot_webstore_connectionString": {
+			"value": ""
+		},
+		"LS_abs_webstore_connectionString": {
+			"value": ""
+		},
+		"LS_adls_data_engineering_dl_accountKey": {
+			"value": ""
+		},
+		"LS_adls_data_engineering_dl_properties_typeProperties_url": {
+			"value": "https://cdededatalakedev001.dfs.core.windows.net/"
+		},
+		"TRG_ingest_uploaded_file_properties_typeProperties_scope": {
+			"value": "/subscriptions/866ecae6-6a3b-43de-b026-c702bd198d9c/resourceGroups/rg-webdevelopment-dev-pm001/providers/Microsoft.Storage/storageAccounts/hypolwebstoredata001"
+		}
+	}
+}
