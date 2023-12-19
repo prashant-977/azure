@@ -2,7 +2,7 @@
 	"name": "TRG_ingest_uploaded_file",
 	"properties": {
 		"annotations": [],
-		"runtimeState": "Stopped",
+		"runtimeState": "Started",
 		"pipelines": [
 			{
 				"pipelineReference": {
